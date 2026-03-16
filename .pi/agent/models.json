@@ -1,18 +1,12 @@
 {
   "providers": {
-    "openai": {
-      "baseUrl": "https://api.openai.com/v1",
-      "apiKey": "OPENAI_API_KEY",
+    "custom": {
+      "baseUrl": "https://api.minimax.io/anthropic",
+      "apiKey": "CUSTOM_API_KEY",
       "api": "openai-completions",
       "models": [
         {
-          "id": "gpt-5.2"
-        },
-        {
-          "id": "gpt-4o"
-        },
-        {
-          "id": "o4-mini"
+          "id": "MiniMax-M2.5"
         }
       ]
     }
