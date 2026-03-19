@@ -257,6 +257,48 @@ NextAuth v5 with Credentials provider (email/password), JWT in httpOnly cookies.
 
 SQLite via Drizzle ORM at `data/thepopebot.sqlite`. Auto-initialized and auto-migrated on server startup. Tables: `users`, `chats`, `messages`, `notifications`, `subscriptions`, `settings` (key-value store, also stores API keys). Column naming: camelCase in JS → snake_case in SQL.
 
+## Docker Commands
+
+```bash
+# Build all images
+docker compose build
+
+# Start the event handler
+docker compose up -d event-handler
+
+# View logs
+docker compose logs -f event-handler
+
+# Run a job container manually (for testing)
+docker compose run --rm claude-code-job
+
+# Build specific image
+docker build -f docker/claude-code-job/Dockerfile -t my-agent/claude-code-job:latest .
+```
+
+## Skills Development
+
+Custom skills go in `skills/` and are symlinked to `skills/active/`. Available skills:
+
+| Skill | Description |
+|-------|-------------|
+| `brave-search` | Web search via Brave Search API |
+| `browser-tools` | Chrome DevTools Protocol automation |
+| `youtube-transcript` | YouTube video transcript fetching |
+| `llm-secrets` | Access LLM-provided credentials |
+| `google-drive` | Google Drive file operations |
+| `google-docs` | Google Docs operations |
+| `kie-ai` | KIE.ai API integration |
+
+Each skill needs:
+- `SKILL.md` - Skill definition with frontmatter (name, description)
+- JavaScript files in skill directory for implementation
+
+To add a new skill:
+1. Create directory under `skills/`
+2. Add `SKILL.md` with name/description frontmatter
+3. Symlink to `skills/active/`
+
 ## GitHub Actions Workflows
 
 | Workflow | Trigger | Purpose |
@@ -336,6 +378,11 @@ User-editable config files in `config/`: `SOUL.md` (personality), `JOB_PLANNING.
 To customize Docker Compose (TLS, ports, volumes, extra services), edit `docker-compose.custom.yml` and set `COMPOSE_FILE=docker-compose.custom.yml` in `.env`. For Tailscale TLS, copy `traefik-dynamic.yml.example` to `traefik-dynamic.yml` and follow the instructions inside.
 
 Skills in `skills/` are activated by symlinking into `skills/active/`. Both `.pi/skills` and `.claude/skills` point to `skills/active/`. Scripts for command-type actions go in `cron/` and `triggers/`.
+
+Some skills require dependencies. Install with `npm install` in the skill directory before running jobs:
+- `skills/brave-search/`
+- `skills/browser-tools/`
+- `skills/youtube-transcript/`
 
 For detailed user guides, see the `docs/` directory.
 
